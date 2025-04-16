@@ -73,7 +73,7 @@ mode = st.sidebar.radio("Choose a View", ["📖 Explore Chapters", "🙏 Life He
 
 # ======================= 📖 EXPLORE CHAPTERS =======================
 if mode == "📖 Explore Chapters":
-    st.title("📘 Bhagavad Gita Explorer – Bheeshma")
+    st.title("Bheeshma - Your Bhagavad Gita Companion")
 
     # --- Chapter Buttons ---
     st.markdown("### 🕉️ Select a Chapter")
