@@ -143,6 +143,8 @@ if mode == "📖 Explore Chapters":
         with st.expander(f"Shloka {shloka['shloka_number']}"):
             st.markdown("**📖 Sanskrit**")
             st.markdown(f"**{shloka['sanskrit_text']}**")
+            st.markdown("**🔤 Transliteration**")
+            st.markdown(f"*{shloka['transliteration']}*")
 
             st.markdown("**🔊 Audio Recitation**")
 
@@ -178,18 +180,36 @@ if mode == "📖 Explore Chapters":
                 # audio_bytes.seek(0)
                 # st.audio(audio_bytes)
 
-            st.markdown("**🔤 Transliteration**")
-            st.markdown(f"*{shloka['transliteration']}*")
+
 
             st.markdown("**🧠 Meaning**")
             st.markdown(shloka["meaning"])
+            st.markdown("**🔊 Listen to Meaning**")
+            def combine_and_speak(meaning, interpretation, application, lang="en"):
+                full_text = (
+                        "Meaning: " + meaning + ". "
+                    )
+                tts = gTTS(text=full_text, lang=lang, slow=False)
+                audio_bytes = BytesIO()
+                tts.write_to_fp(audio_bytes)
+                audio_bytes.seek(0)
+                return audio_bytes
+
+            tts_audio = combine_and_speak(
+                shloka["meaning"],
+                shloka["interpretation"],
+                shloka["life_application"]
+                )
+            st.audio(tts_audio, format="audio/mp3")
 
             st.markdown("**💬 Interpretation**")
             st.markdown(shloka["interpretation"])
 
             st.markdown("**🌱 Life Application**")
             st.markdown(shloka["life_application"])
+            
 
+    
 
 
 # ======================= 🙏 LIFE HELP =======================
@@ -241,55 +261,54 @@ elif mode == "🙏 Life Help":
             st.warning("🙏 Sorry, I couldn't find a matching emotion. Try keywords like `fear`, `guilt`, `jealousy`, `loneliness`, or `lust`.")
 
 
-#======================= 🤖 CHATBOT MODE =======================
+# ======================= 🤖 CHATBOT MODE =======================
 
-elif mode == "🤖 Chat with Bheeshma":
-    st.markdown("Your Sanatani bot, Bheeshma will be out soon :)")
-    # import openai
-    # import os
-    # from dotenv import load_dotenv
+# elif mode == "🤖 Chat with Bheeshma":
+#     import openai
+#     import os
+#     from dotenv import load_dotenv
 
-    # # Load environment variable
-    # load_dotenv()
-    # openai.api_key = os.getenv("OPENAI_API_KEY")
+#     # Load environment variable
+#     load_dotenv()
+#     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    # st.title("🧠 Chat with Bheeshma")
-    # st.markdown("Ask about life, karma, fear, duty, or spiritual questions. Bheeshma will reply using the wisdom of the Bhagavad Gita.")
+#     st.title("🧠 Chat with Bheeshma")
+#     st.markdown("Ask about life, karma, fear, duty, or spiritual questions. Bheeshma will reply using the wisdom of the Bhagavad Gita.")
 
-    # # Initialize message history
-    # if "messages" not in st.session_state:
-    #     st.session_state.messages = []
+#     # Initialize message history
+#     if "messages" not in st.session_state:
+#         st.session_state.messages = []
 
-    # # Display chat history
-    # for msg in st.session_state.messages:
-    #     with st.chat_message(msg["role"]):
-    #         st.markdown(msg["content"])
+#     # Display chat history
+#     for msg in st.session_state.messages:
+#         with st.chat_message(msg["role"]):
+#             st.markdown(msg["content"])
 
-    # # User input field
-    # if user_input := st.chat_input("What’s troubling you today, warrior?"):
-    #     st.session_state.messages.append({"role": "user", "content": user_input})
-    #     with st.chat_message("user"):
-    #         st.markdown(user_input)
+#     # User input field
+#     if user_input := st.chat_input("What’s troubling you today, warrior?"):
+#         st.session_state.messages.append({"role": "user", "content": user_input})
+#         with st.chat_message("user"):
+#             st.markdown(user_input)
 
-    #     with st.chat_message("assistant"):
-    #         with st.spinner("Consulting the Gita..."):
-    #             try:
-    #                 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    #                 response = client.chat.completions.create(
-    #                     model="gpt-3.5-turbo",
-    #                     messages=[
-    #                         {"role": "system", "content": 
-    #                         "You are Bheeshma, a wise and spiritual guide from the Mahabharata. "
-    #                         "You respond using the teachings of the Bhagavad Gita. "
-    #                         "Cite shlokas with verse numbers when relevant. Speak with calm clarity, like a guru."},
-    #                         *st.session_state.messages
-    #                     ]
-    #                 )
-    #                 reply = response.choices[0].message.content
-    #                 st.markdown(reply)
-    #                 st.session_state.messages.append({"role": "assistant", "content": reply})
-    #             except Exception as e:
-    #                 st.error(f"Failed to get response: {e}")
+#         with st.chat_message("assistant"):
+#             with st.spinner("Consulting the Gita..."):
+#                 try:
+#                     client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+#                     response = client.chat.completions.create(
+#                         model="gpt-3.5-turbo",
+#                         messages=[
+#                             {"role": "system", "content": 
+#                             "You are Bheeshma, a wise and spiritual guide from the Mahabharata. "
+#                             "You respond using the teachings of the Bhagavad Gita. "
+#                             "Cite shlokas with verse numbers when relevant. Speak with calm clarity, like a guru."},
+#                             *st.session_state.messages
+#                         ]
+#                     )
+#                     reply = response.choices[0].message.content
+#                     st.markdown(reply)
+#                     st.session_state.messages.append({"role": "assistant", "content": reply})
+#                 except Exception as e:
+#                     st.error(f"Failed to get response: {e}")
 
 
 
