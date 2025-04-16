@@ -6,7 +6,13 @@ from gtts import gTTS
 import requests
 from io import BytesIO
 import io
+import openai
+import requests
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Set Streamlit page config FIRST
 st.set_page_config(page_title="Bheeshma – Bhagavad Gita")
@@ -16,7 +22,7 @@ st.set_page_config(page_title="Bheeshma – Bhagavad Gita")
 def load_data():
     with open("bhagavad_gita_complete.json", "r", encoding="utf-8") as f:
         return json.load(f)
-
+    
 data = load_data()
 chapters = data["chapters"]
 problem_map = data.get("problem_solutions_map", {})
@@ -69,9 +75,19 @@ if "selected_section" not in st.session_state:
     st.session_state.selected_section = None
 
 # --- App Mode Switch ---
-mode = st.sidebar.radio("Choose a View", ["📖 Explore Chapters", "🙏 Life Help", "🔍 Search Shlokas"])
+mode = st.sidebar.radio("Choose a View", [
+    "📖 Explore Chapters",
+    "🙏 Life Help",
+    "🤖 Chat with Bheeshma"  # 👈 Add this here
+])
+
 
 # ======================= 📖 EXPLORE CHAPTERS =======================
+def load_audio_map():
+    with open("gita_audio_links.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+AUDIO_LINKS = load_audio_map()
 if mode == "📖 Explore Chapters":
     st.title("Bheeshma - Your Bhagavad Gita Companion")
 
@@ -128,25 +144,39 @@ if mode == "📖 Explore Chapters":
             st.markdown("**📖 Sanskrit**")
             st.markdown(f"**{shloka['sanskrit_text']}**")
 
-            # 🔊 Gita Supersite playback
-            audio_url = f"https://www.gitasupersite.iitk.ac.in/static/audio/{shloka['chapter']}/{shloka['shloka_number']}.mp3"
-            st.markdown("**🔊 Gita Supersite Recitation**")
-            
-            try:
-                # Check if audio URL is accessible
-                response = requests.head(audio_url)
-                if response.status_code == 200:
-                    st.audio(audio_url)
-                else:
-                    raise Exception("Supersite audio not available")
+            st.markdown("**🔊 Audio Recitation**")
 
-            except Exception:
-                st.warning("⚠️ Official audio not available. Using fallback voice.")
-                tts = gTTS(text=shloka['sanskrit_text'], lang='hi', slow=True)
-                audio_bytes = BytesIO()
-                tts.write_to_fp(audio_bytes)
-                audio_bytes.seek(0)
-                st.audio(audio_bytes)
+                # Construct URL: CHAP<chapter>/<sloka>-<sloka>.MP3
+            chapter_str = str(shloka["chapter"])
+            sloka_str = str(shloka["shloka_number"])
+            path = AUDIO_LINKS.get(chapter_str, {}).get(sloka_str)
+
+            if path:
+                audio_url = f"https://www.gitasupersite.iitk.ac.in/sites/default/files/audio/{path}"
+                try:
+                    r = requests.head(audio_url, timeout=5)
+                    if r.status_code == 200:
+                        st.audio(audio_url)
+                    else:
+                        raise Exception("Audio not available")
+                except:
+                    st.warning("⚠️ Official audio not available. Using fallback voice.")
+                    try:
+                        tts = gTTS(text=shloka["sanskrit_text"], lang="hi", slow=True)
+                        audio_bytes = BytesIO()
+                        tts.write_to_fp(audio_bytes)
+                        audio_bytes.seek(0)
+                        st.audio(audio_bytes)
+                    except Exception as e:
+                        st.error(f"❌ Fallback audio failed: {e}")
+            else:
+                st.warning("⚠️ Audio path not found in map.")          
+                
+                # tts = gTTS(text=shloka['sanskrit_text'], lang='hi', slow=True)
+                # audio_bytes = BytesIO()
+                # tts.write_to_fp(audio_bytes)
+                # audio_bytes.seek(0)
+                # st.audio(audio_bytes)
 
             st.markdown("**🔤 Transliteration**")
             st.markdown(f"*{shloka['transliteration']}*")
@@ -209,6 +239,58 @@ elif mode == "🙏 Life Help":
                             st.markdown(f"**🌱 Life Application**\n\n{shloka['life_application']}")
         else:
             st.warning("🙏 Sorry, I couldn't find a matching emotion. Try keywords like `fear`, `guilt`, `jealousy`, `loneliness`, or `lust`.")
+
+
+# ======================= 🤖 CHATBOT MODE =======================
+
+# elif mode == "🤖 Chat with Bheeshma":
+#     import openai
+#     import os
+#     from dotenv import load_dotenv
+
+#     # Load environment variable
+#     load_dotenv()
+#     openai.api_key = os.getenv("OPENAI_API_KEY")
+
+#     st.title("🧠 Chat with Bheeshma")
+#     st.markdown("Ask about life, karma, fear, duty, or spiritual questions. Bheeshma will reply using the wisdom of the Bhagavad Gita.")
+
+#     # Initialize message history
+#     if "messages" not in st.session_state:
+#         st.session_state.messages = []
+
+#     # Display chat history
+#     for msg in st.session_state.messages:
+#         with st.chat_message(msg["role"]):
+#             st.markdown(msg["content"])
+
+#     # User input field
+#     if user_input := st.chat_input("What’s troubling you today, warrior?"):
+#         st.session_state.messages.append({"role": "user", "content": user_input})
+#         with st.chat_message("user"):
+#             st.markdown(user_input)
+
+#         with st.chat_message("assistant"):
+#             with st.spinner("Consulting the Gita..."):
+#                 try:
+#                     client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+#                     response = client.chat.completions.create(
+#                         model="gpt-3.5-turbo",
+#                         messages=[
+#                             {"role": "system", "content": 
+#                             "You are Bheeshma, a wise and spiritual guide from the Mahabharata. "
+#                             "You respond using the teachings of the Bhagavad Gita. "
+#                             "Cite shlokas with verse numbers when relevant. Speak with calm clarity, like a guru."},
+#                             *st.session_state.messages
+#                         ]
+#                     )
+#                     reply = response.choices[0].message.content
+#                     st.markdown(reply)
+#                     st.session_state.messages.append({"role": "assistant", "content": reply})
+#                 except Exception as e:
+#                     st.error(f"Failed to get response: {e}")
+
+
 
 # ======================= 🔍 SEARCH SHLOKAS =======================
 elif mode == "🔍 Search Shlokas":
