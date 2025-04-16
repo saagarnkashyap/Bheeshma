@@ -257,3 +257,14 @@ elif mode == "🔍 Search Shlokas":
                         st.markdown(f"**🌱 Life Application**\n\n{shloka['life_application']}")
             else:
                 st.info("No results found.")
+
+st.markdown(
+    """
+    <hr style="margin-top: 2rem; margin-bottom: 1rem;">
+    <div style="text-align: center; font-size: 0.9rem; color: gray;">
+        Made with 🕉️ by <strong>Saagar N Kashyap</strong>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
