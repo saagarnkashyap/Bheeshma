@@ -20,3 +20,15 @@ venv/
 # Audio cache (optional)
 *.mp3
 *.wav
+
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+*.env
+.gitaudio/
+.gitaudio_cache/
+gita_audio_links.json  # (optional, only if you want to regenerate from code)
