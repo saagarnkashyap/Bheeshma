@@ -204,7 +204,8 @@ if mode == "📖 Explore Chapters":
 
             st.markdown("**💬 Interpretation**")
             st.markdown(shloka["interpretation"])
-
+            st.markdown("**🌱 Life Application**")
+            st.markdown(shloka["life_application"])
 
             
 
