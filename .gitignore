@@ -1,0 +1,22 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Environment
+.env
+.venv/
+venv/
+
+# OS files
+.DS_Store
+
+# Streamlit stuff
+*.log
+*.pyc
+*.pyo
+.streamlit/
+
+# Audio cache (optional)
+*.mp3
+*.wav
