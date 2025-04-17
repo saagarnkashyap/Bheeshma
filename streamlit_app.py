@@ -184,23 +184,23 @@ if mode == "📖 Explore Chapters":
 
             st.markdown("**🧠 Meaning**")
             st.markdown(shloka["meaning"])
-            st.markdown("**🔊 Listen to Meaning**")
-            def combine_and_speak(meaning, interpretation, application, lang="en"):
-                full_text = (
-                        "Meaning: " + meaning + ". "
-                    )
-                tts = gTTS(text=full_text, lang=lang, slow=False)
-                audio_bytes = BytesIO()
-                tts.write_to_fp(audio_bytes)
-                audio_bytes.seek(0)
-                return audio_bytes
+            # st.markdown("**🔊 Listen to Meaning**")
+            # def combine_and_speak(meaning, interpretation, application, lang="en"):
+            #     full_text = (
+            #             "Meaning: " + meaning + ". "
+            #         )
+            #     tts = gTTS(text=full_text, lang=lang, slow=False)
+            #     audio_bytes = BytesIO()
+            #     tts.write_to_fp(audio_bytes)
+            #     audio_bytes.seek(0)
+            #     return audio_bytes
 
-            tts_audio = combine_and_speak(
-                shloka["meaning"],
-                shloka["interpretation"],
-                shloka["life_application"]
-                )
-            st.audio(tts_audio, format="audio/mp3")
+            # tts_audio = combine_and_speak(
+            #     shloka["meaning"],
+            #     shloka["interpretation"],
+            #     shloka["life_application"]
+            #     )
+            # st.audio(tts_audio, format="audio/mp3")
 
             st.markdown("**💬 Interpretation**")
             st.markdown(shloka["interpretation"])
