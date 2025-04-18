@@ -330,7 +330,7 @@ mode = st.sidebar.radio("Choose a View", [
 
 
 st.markdown("""
-<audio id="bg-chant" loop style="display:none">
+<audio id="bg-chant" preload="auto" loop style="display:none">
   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
 </audio>
 
@@ -339,7 +339,7 @@ st.markdown("""
   top: 0; left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -348,6 +348,7 @@ st.markdown("""
   font-family: 'Unbounded', sans-serif;
   text-align: center;
   z-index: 99999;
+  opacity: 1;
   transition: opacity 1s ease;
 ">
   🕉️ Tap anywhere to enter meditative mode
@@ -357,28 +358,35 @@ st.markdown("""
   const chant = document.getElementById("bg-chant");
   const overlay = document.getElementById("overlay");
 
-  function fadeInChant() {
-    chant.volume = 0;
-    chant.play();
-    let v = 0;
-    const fade = setInterval(() => {
-      v += 0.05;
-      chant.volume = Math.min(v, 1);
-      if (v >= 1) clearInterval(fade);
-    }, 80);
+  async function fadeInChant() {
+    try {
+      chant.volume = 0;
+      await chant.play();
+      let v = 0;
+      const fade = setInterval(() => {
+        v += 0.05;
+        chant.volume = Math.min(v, 1);
+        if (v >= 1) clearInterval(fade);
+      }, 80);
+    } catch (err) {
+      console.error("Audio play failed:", err);
+    }
   }
 
-  function enterMeditation() {
-    if (!chant.paused) return; // already playing
-    fadeInChant();
+  async function enterMeditation() {
+    if (!chant.paused) return;
+    await fadeInChant();
     overlay.style.opacity = 0;
     setTimeout(() => {
       overlay.style.display = "none";
     }, 1000);
   }
 
-  document.addEventListener("click", enterMeditation, { once: true });
-  document.addEventListener("touchstart", enterMeditation, { once: true });
+  // Make sure DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("click", enterMeditation, { once: true });
+    document.addEventListener("touchstart", enterMeditation, { once: true });
+  });
 </script>
 """, unsafe_allow_html=True)
 
