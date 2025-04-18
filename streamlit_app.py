@@ -166,57 +166,38 @@ mode = st.sidebar.radio("Choose a View", [
     "🤖 Chat with Bheeshma"  # 👈 Add this here
 ])
 st.markdown("""
-<audio id="bg-chant" autoplay loop muted style="display:none">
+<audio id="bg-chant" autoplay loop style="display:none">
   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
 </audio>
 
-<div style="
+<button onclick="fadeToggleChant()" style="
   position: fixed;
   bottom: 25px;
   right: 25px;
+  background: radial-gradient(circle, #ffd700, #ff9900);
+  color: black;
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 0 15px gold;
   z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-">
-
-  <button onclick="fadeToggleChant()" id="chantBtn" style="
-    background: radial-gradient(circle, #ffd700, #ff9900);
-    color: black;
-    padding: 12px 18px;
-    border-radius: 30px;
-    font-weight: bold;
-    border: none;
-    box-shadow: 0 0 15px gold;
-    cursor: pointer;
-    font-size: 14px;
-    animation: pulse 2s infinite;
-  ">🔊 Play Meditative Chant</button>
-
-  <input type="range" min="0" max="1" step="0.01" value="1" id="chantVolume" style="width: 100px;">
-</div>
+  cursor: pointer;
+  font-size: 14px;
+  animation: pulse 2s infinite;
+">🔊 Play Meditative Chant</button>
 
 <script>
   const chant = document.getElementById('bg-chant');
-  const chantBtn = document.getElementById('chantBtn');
-  const chantVolume = document.getElementById('chantVolume');
   let fading = false;
-  let isPlaying = false;
-  let shlokaPlaying = false;
-
-  chant.volume = 1;
-
-  chantVolume.addEventListener('input', () => {
-    chant.volume = parseFloat(chantVolume.value);
-  });
+  let isPlaying = true;
 
   function fadeToggleChant() {
     if (fading) return;
     fading = true;
-    if (chant.muted) chant.muted = false;
 
     let volume = chant.volume;
-    const step = 0.05;
+    let step = 0.05;
 
     const fade = setInterval(() => {
       if (isPlaying) {
@@ -224,67 +205,21 @@ st.markdown("""
         if (volume <= 0) {
           chant.pause();
           isPlaying = false;
-          chantBtn.innerText = "🧘 Play Meditative Chant";
           clearInterval(fade);
           fading = false;
         }
       } else {
-        chant.volume = 0;
-        chant.play();
-        volume = 0;
-        const fadeIn = setInterval(() => {
-          volume += step;
-          chant.volume = Math.min(1, volume);
-          if (volume >= 1) {
-            isPlaying = true;
-            chantBtn.innerText = "⏸️ Pause Meditative Chant";
-            clearInterval(fadeIn);
-            fading = false;
-          }
-        }, 80);
-        clearInterval(fade);
+        if (chant.paused) chant.play();
+        volume += step;
+        if (volume >= 1) {
+          isPlaying = true;
+          clearInterval(fade);
+          fading = false;
+        }
       }
+      chant.volume = Math.max(0, Math.min(1, volume));
     }, 80);
   }
-
-  document.addEventListener("play", function(e){
-    if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
-      shlokaPlaying = true;
-      if (!chant.paused) {
-        const fadeOut = setInterval(() => {
-          chant.volume -= 0.05;
-          if (chant.volume <= 0) {
-            chant.pause();
-            chant.volume = 0;
-            chantBtn.innerText = "🧘 Play Meditative Chant";
-            isPlaying = false;
-            clearInterval(fadeOut);
-          }
-        }, 80);
-      }
-    }
-  }, true);
-
-  document.addEventListener("ended", function(e){
-    if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
-      shlokaPlaying = false;
-      if (chant.paused) {
-        chant.volume = 0;
-        chant.play();
-        chantBtn.innerText = "⏸️ Pause Meditative Chant";
-        if (chant.muted) chant.muted = false;
-        let v = 0;
-        const fadeIn = setInterval(() => {
-          v += 0.05;
-          chant.volume = Math.min(1, v);
-          if (v >= 1) {
-            isPlaying = true;
-            clearInterval(fadeIn);
-          }
-        }, 80);
-      }
-    }
-  }, true);
 </script>
 
 <style>
@@ -295,6 +230,7 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # ======================= 📖 EXPLORE CHAPTERS =======================
