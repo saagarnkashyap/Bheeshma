@@ -166,84 +166,124 @@ mode = st.sidebar.radio("Choose a View", [
     "🤖 Chat with Bheeshma"  # 👈 Add this here
 ])
 st.markdown("""
-<audio id="bg-chant" autoplay loop muted style="display:none">
+<audio id="bg-chant" autoplay loop style="display:none">
   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
 </audio>
 
-<button onclick="fadeToggleChant()" id="chant-btn" style="
+<div style="
   position: fixed;
   bottom: 25px;
   right: 25px;
-  background: radial-gradient(circle, #ffd700, #ff9900);
-  color: black;
-  padding: 12px 22px;
-  border-radius: 30px;
-  font-weight: bold;
-  border: none;
-  box-shadow: 0 0 15px gold;
   z-index: 9999;
-  cursor: pointer;
-  font-size: 14px;
-  animation: pulse 2s infinite;
-">🔊 Pause Meditative Chant</button>
+  display: flex;
+  align-items: center;
+  gap: 10px;
+">
+
+  <button onclick="fadeToggleChant()" id="chantBtn" style="
+    background: radial-gradient(circle, #ffd700, #ff9900);
+    color: black;
+    padding: 12px 18px;
+    border-radius: 30px;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 0 15px gold;
+    cursor: pointer;
+    font-size: 14px;
+    animation: pulse 2s infinite;
+  ">🔊 Play Meditative Chant</button>
+
+  <input type="range" min="0" max="1" step="0.01" value="1" id="chantVolume" style="width: 100px;">
+</div>
 
 <script>
   const chant = document.getElementById('bg-chant');
-  const btn = document.getElementById('chant-btn');
+  const chantBtn = document.getElementById('chantBtn');
+  const chantVolume = document.getElementById('chantVolume');
   let fading = false;
-  let isPlaying = false;
+  let isPlaying = true;
+  let shlokaPlaying = false;
 
-  // Ensure playback starts after interaction
-  window.addEventListener('DOMContentLoaded', () => {
-    chant.muted = true;
-    chant.volume = 0;
-    chant.play().then(() => {
-      fadeVolume(chant, 1, 1000);
-      chant.muted = false;
-      isPlaying = true;
-    }).catch((e) => {
-      console.log("Playback blocked until interaction:", e);
-    });
+  // Update volume manually
+  chantVolume.addEventListener('input', () => {
+    chant.volume = parseFloat(chantVolume.value);
   });
-
-  function fadeVolume(audio, target, duration) {
-    const stepTime = 50;
-    const steps = duration / stepTime;
-    const step = (target - audio.volume) / steps;
-    let count = 0;
-
-    const fade = setInterval(() => {
-      audio.volume = Math.min(1, Math.max(0, audio.volume + step));
-      count++;
-      if (count >= steps) clearInterval(fade);
-    }, stepTime);
-  }
 
   function fadeToggleChant() {
     if (fading) return;
     fading = true;
 
-    if (isPlaying) {
-      fadeVolume(chant, 0, 800);
-      setTimeout(() => {
-        chant.pause();
-        btn.innerText = "🔊 Play Meditative Chant";
-        isPlaying = false;
-        fading = false;
-      }, 800);
-    } else {
-      chant.volume = 0;
-      chant.play().then(() => {
-        fadeVolume(chant, 1, 800);
-        btn.innerText = "🔊 Pause Meditative Chant";
-        isPlaying = true;
-        fading = false;
-      }).catch(() => {
-        alert("🎧 Please interact with the page first (click anywhere)");
-        fading = false;
-      });
-    }
+    let volume = chant.volume;
+    const step = 0.05;
+
+    const fade = setInterval(() => {
+      if (isPlaying) {
+        volume -= step;
+        if (volume <= 0) {
+          chant.pause();
+          isPlaying = false;
+          chantBtn.innerText = "🧘 Play Meditative Chant";
+          clearInterval(fade);
+          fading = false;
+        }
+      } else {
+        chant.volume = 0;
+        chant.play();
+        volume = 0;
+        const fadeIn = setInterval(() => {
+          volume += step;
+          chant.volume = Math.min(1, volume);
+          if (volume >= 1) {
+            isPlaying = true;
+            chantBtn.innerText = "⏸️ Pause Meditative Chant";
+            clearInterval(fadeIn);
+            fading = false;
+          }
+        }, 80);
+        clearInterval(fade);
+      }
+    }, 80);
   }
+
+  // Pause chant when any other audio plays (shloka)
+  document.addEventListener("play", function(e){
+    if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
+      shlokaPlaying = true;
+      if (!chant.paused) {
+        const fadeOut = setInterval(() => {
+          chant.volume -= 0.05;
+          if (chant.volume <= 0) {
+            chant.pause();
+            chant.volume = 0;
+            clearInterval(fadeOut);
+            chantBtn.innerText = "🧘 Play Meditative Chant";
+            isPlaying = false;
+          }
+        }, 80);
+      }
+    }
+  }, true);
+
+  // Resume chant when shloka ends
+  document.addEventListener("ended", function(e){
+    if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
+      shlokaPlaying = false;
+      if (chant.paused) {
+        chant.volume = 0;
+        chant.play();
+        chantBtn.innerText = "⏸️ Pause Meditative Chant";
+        let v = 0;
+        const fadeIn = setInterval(() => {
+          v += 0.05;
+          chant.volume = Math.min(1, v);
+          if (v >= 1) {
+            isPlaying = true;
+            clearInterval(fadeIn);
+          }
+        }, 80);
+      }
+    }
+  }, true);
 </script>
 
 <style>
@@ -254,6 +294,98 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
+
+#----------------------------original markdown for autoplay chanting--------------------------
+# st.markdown("""
+# <audio id="bg-chant" autoplay loop muted style="display:none">
+#   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
+# </audio>
+
+# <button onclick="fadeToggleChant()" id="chant-btn" style="
+#   position: fixed;
+#   bottom: 25px;
+#   right: 25px;
+#   background: radial-gradient(circle, #ffd700, #ff9900);
+#   color: black;
+#   padding: 12px 22px;
+#   border-radius: 30px;
+#   font-weight: bold;
+#   border: none;
+#   box-shadow: 0 0 15px gold;
+#   z-index: 9999;
+#   cursor: pointer;
+#   font-size: 14px;
+#   animation: pulse 2s infinite;
+# ">🔊 Pause Meditative Chant</button>
+
+# <script>
+#   const chant = document.getElementById('bg-chant');
+#   const btn = document.getElementById('chant-btn');
+#   let fading = false;
+#   let isPlaying = false;
+
+#   // Ensure playback starts after interaction
+#   window.addEventListener('DOMContentLoaded', () => {
+#     chant.muted = true;
+#     chant.volume = 0;
+#     chant.play().then(() => {
+#       fadeVolume(chant, 1, 1000);
+#       chant.muted = false;
+#       isPlaying = true;
+#     }).catch((e) => {
+#       console.log("Playback blocked until interaction:", e);
+#     });
+#   });
+
+#   function fadeVolume(audio, target, duration) {
+#     const stepTime = 50;
+#     const steps = duration / stepTime;
+#     const step = (target - audio.volume) / steps;
+#     let count = 0;
+
+#     const fade = setInterval(() => {
+#       audio.volume = Math.min(1, Math.max(0, audio.volume + step));
+#       count++;
+#       if (count >= steps) clearInterval(fade);
+#     }, stepTime);
+#   }
+
+#   function fadeToggleChant() {
+#     if (fading) return;
+#     fading = true;
+
+#     if (isPlaying) {
+#       fadeVolume(chant, 0, 800);
+#       setTimeout(() => {
+#         chant.pause();
+#         btn.innerText = "🔊 Play Meditative Chant";
+#         isPlaying = false;
+#         fading = false;
+#       }, 800);
+#     } else {
+#       chant.volume = 0;
+#       chant.play().then(() => {
+#         fadeVolume(chant, 1, 800);
+#         btn.innerText = "🔊 Pause Meditative Chant";
+#         isPlaying = true;
+#         fading = false;
+#       }).catch(() => {
+#         alert("🎧 Please interact with the page first (click anywhere)");
+#         fading = false;
+#       });
+#     }
+#   }
+# </script>
+
+# <style>
+# @keyframes pulse {
+#   0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+#   70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
+#   100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+# }
+# </style>
+# """, unsafe_allow_html=True)
 
 
 
