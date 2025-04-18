@@ -166,11 +166,11 @@ mode = st.sidebar.radio("Choose a View", [
     "🤖 Chat with Bheeshma"  # 👈 Add this here
 ])
 st.markdown("""
-<audio id="bg-chant" autoplay loop style="display:none">
+<audio id="bg-chant" autoplay loop muted style="display:none">
   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
 </audio>
 
-<button onclick="fadeToggleChant()" style="
+<button onclick="fadeToggleChant()" id="chant-btn" style="
   position: fixed;
   bottom: 25px;
   right: 25px;
@@ -185,40 +185,64 @@ st.markdown("""
   cursor: pointer;
   font-size: 14px;
   animation: pulse 2s infinite;
-">🔊 Play Meditative Chant</button>
+">🔊 Pause Meditative Chant</button>
 
 <script>
   const chant = document.getElementById('bg-chant');
+  const btn = document.getElementById('chant-btn');
   let fading = false;
-  let isPlaying = true;
+  let isPlaying = false;
+
+  // Ensure playback starts after interaction
+  window.addEventListener('DOMContentLoaded', () => {
+    chant.muted = true;
+    chant.volume = 0;
+    chant.play().then(() => {
+      fadeVolume(chant, 1, 1000);
+      chant.muted = false;
+      isPlaying = true;
+    }).catch((e) => {
+      console.log("Playback blocked until interaction:", e);
+    });
+  });
+
+  function fadeVolume(audio, target, duration) {
+    const stepTime = 50;
+    const steps = duration / stepTime;
+    const step = (target - audio.volume) / steps;
+    let count = 0;
+
+    const fade = setInterval(() => {
+      audio.volume = Math.min(1, Math.max(0, audio.volume + step));
+      count++;
+      if (count >= steps) clearInterval(fade);
+    }, stepTime);
+  }
 
   function fadeToggleChant() {
     if (fading) return;
     fading = true;
 
-    let volume = chant.volume;
-    let step = 0.05;
-
-    const fade = setInterval(() => {
-      if (isPlaying) {
-        volume -= step;
-        if (volume <= 0) {
-          chant.pause();
-          isPlaying = false;
-          clearInterval(fade);
-          fading = false;
-        }
-      } else {
-        if (chant.paused) chant.play();
-        volume += step;
-        if (volume >= 1) {
-          isPlaying = true;
-          clearInterval(fade);
-          fading = false;
-        }
-      }
-      chant.volume = Math.max(0, Math.min(1, volume));
-    }, 80);
+    if (isPlaying) {
+      fadeVolume(chant, 0, 800);
+      setTimeout(() => {
+        chant.pause();
+        btn.innerText = "🔊 Play Meditative Chant";
+        isPlaying = false;
+        fading = false;
+      }, 800);
+    } else {
+      chant.volume = 0;
+      chant.play().then(() => {
+        fadeVolume(chant, 1, 800);
+        btn.innerText = "🔊 Pause Meditative Chant";
+        isPlaying = true;
+        fading = false;
+      }).catch(() => {
+        alert("🎧 Please interact with the page first (click anywhere)");
+        fading = false;
+      });
+    }
   }
 </script>
 
@@ -230,6 +254,7 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 
