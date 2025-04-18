@@ -329,107 +329,141 @@ mode = st.sidebar.radio("Choose a View", [
 
 
 
+st.markdown("""
+<audio id="bg-chant" loop style="display:none">
+  <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
+</audio>
+
+<div id="overlay" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5em;
+  font-family: 'Unbounded', sans-serif;
+  text-align: center;
+  z-index: 99999;
+  transition: opacity 1s ease;
+">
+  🕉️ Tap anywhere to enter meditative mode
+</div>
+
+<script>
+  const chant = document.getElementById("bg-chant");
+  const overlay = document.getElementById("overlay");
+
+  function fadeInChant() {
+    chant.volume = 0;
+    chant.play();
+    let v = 0;
+    const fade = setInterval(() => {
+      v += 0.05;
+      chant.volume = Math.min(v, 1);
+      if (v >= 1) clearInterval(fade);
+    }, 80);
+  }
+
+  function enterMeditation() {
+    if (!chant.paused) return; // already playing
+    fadeInChant();
+    overlay.style.opacity = 0;
+    setTimeout(() => {
+      overlay.style.display = "none";
+    }, 1000);
+  }
+
+  document.addEventListener("click", enterMeditation, { once: true });
+  document.addEventListener("touchstart", enterMeditation, { once: true });
+</script>
+""", unsafe_allow_html=True)
+
+
+
+#----------------------------original markdown for autoplay chanting--------------------------
 # st.markdown("""
-# <audio id="bg-chant" loop style="display:none">
+# <audio id="bg-chant" autoplay loop muted style="display:none">
 #   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
 # </audio>
 
-# <div style="
+# <button onclick="fadeToggleChant()" id="chant-btn" style="
 #   position: fixed;
 #   bottom: 25px;
 #   right: 25px;
+#   background: radial-gradient(circle, #ffd700, #ff9900);
+#   color: black;
+#   padding: 12px 22px;
+#   border-radius: 30px;
+#   font-weight: bold;
+#   border: none;
+#   box-shadow: 0 0 15px gold;
 #   z-index: 9999;
-#   display: flex;
-#   align-items: center;
-#   gap: 10px;
-# ">
-#   <button onclick="fadeToggleChant()" id="chantBtn" style="
-#     background: radial-gradient(circle, #ffd700, #ff9900);
-#     color: black;
-#     padding: 12px 18px;
-#     border-radius: 30px;
-#     font-weight: bold;
-#     border: none;
-#     box-shadow: 0 0 15px gold;
-#     cursor: pointer;
-#     font-size: 14px;
-#     animation: pulse 2s infinite;
-#   ">🔊 Play Meditative Chant</button>
-
-#   <input type="range" min="0" max="1" step="0.01" value="1" id="chantVolume" style="width: 100px;">
-# </div>
+#   cursor: pointer;
+#   font-size: 14px;
+#   animation: pulse 2s infinite;
+# ">🔊 Pause Meditative Chant</button>
 
 # <script>
 #   const chant = document.getElementById('bg-chant');
-#   const chantBtn = document.getElementById('chantBtn');
-#   const chantVolume = document.getElementById('chantVolume');
-#   let isPlaying = false;
+#   const btn = document.getElementById('chant-btn');
 #   let fading = false;
+#   let isPlaying = false;
 
-#   // Volume Control
-#   chantVolume.addEventListener('input', () => {
-#     chant.volume = parseFloat(chantVolume.value);
+#   // Ensure playback starts after interaction
+#   window.addEventListener('DOMContentLoaded', () => {
+#     chant.muted = true;
+#     chant.volume = 0;
+#     chant.play().then(() => {
+#       fadeVolume(chant, 1, 1000);
+#       chant.muted = false;
+#       isPlaying = true;
+#     }).catch((e) => {
+#       console.log("Playback blocked until interaction:", e);
+#     });
 #   });
+
+#   function fadeVolume(audio, target, duration) {
+#     const stepTime = 50;
+#     const steps = duration / stepTime;
+#     const step = (target - audio.volume) / steps;
+#     let count = 0;
+
+#     const fade = setInterval(() => {
+#       audio.volume = Math.min(1, Math.max(0, audio.volume + step));
+#       count++;
+#       if (count >= steps) clearInterval(fade);
+#     }, stepTime);
+#   }
 
 #   function fadeToggleChant() {
 #     if (fading) return;
 #     fading = true;
 
-#     let volume = chant.volume;
-#     const step = 0.05;
-
 #     if (isPlaying) {
-#       const fadeOut = setInterval(() => {
-#         volume -= step;
-#         chant.volume = Math.max(0, volume);
-#         if (volume <= 0) {
-#           chant.pause();
-#           isPlaying = false;
-#           chantBtn.innerText = "🧘 Play Meditative Chant";
-#           clearInterval(fadeOut);
-#           fading = false;
-#         }
-#       }, 80);
+#       fadeVolume(chant, 0, 800);
+#       setTimeout(() => {
+#         chant.pause();
+#         btn.innerText = "🔊 Play Meditative Chant";
+#         isPlaying = false;
+#         fading = false;
+#       }, 800);
 #     } else {
 #       chant.volume = 0;
 #       chant.play().then(() => {
-#         const fadeIn = setInterval(() => {
-#           volume += step;
-#           chant.volume = Math.min(1, volume);
-#           if (volume >= 1) {
-#             isPlaying = true;
-#             chantBtn.innerText = "⏸️ Pause Meditative Chant";
-#             clearInterval(fadeIn);
-#             fading = false;
-#           }
-#         }, 80);
-#       }).catch(e => console.log("Playback failed:", e));
+#         fadeVolume(chant, 1, 800);
+#         btn.innerText = "🔊 Pause Meditative Chant";
+#         isPlaying = true;
+#         fading = false;
+#       }).catch(() => {
+#         alert("🎧 Please interact with the page first (click anywhere)");
+#         fading = false;
+#       });
 #     }
 #   }
-
-#   // Auto start after interaction
-#   const tryAutoPlay = () => {
-#     if (!isPlaying) {
-#       chant.volume = 0;
-#       chant.play().then(() => {
-#         let v = 0;
-#         const fadeIn = setInterval(() => {
-#           v += 0.05;
-#           chant.volume = Math.min(1, v);
-#           if (v >= 1) {
-#             isPlaying = true;
-#             chantBtn.innerText = "⏸️ Pause Meditative Chant";
-#             clearInterval(fadeIn);
-#           }
-#         }, 80);
-#       }).catch(e => console.log("Autoplay blocked:", e));
-#     }
-#     document.removeEventListener('click', tryAutoPlay);
-#     document.removeEventListener('touchstart', tryAutoPlay);
-#   };
-
-#   document.addEventListener('click', tryAutoPlay);
-#   document.addEventListener('touchstart', tryAutoPlay);
 # </script>
 
 # <style>
@@ -440,99 +474,6 @@ mode = st.sidebar.radio("Choose a View", [
 # }
 # </style>
 # """, unsafe_allow_html=True)
-
-
-
-#----------------------------original markdown for autoplay chanting--------------------------
-st.markdown("""
-<audio id="bg-chant" autoplay loop muted style="display:none">
-  <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
-</audio>
-
-<button onclick="fadeToggleChant()" id="chant-btn" style="
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background: radial-gradient(circle, #ffd700, #ff9900);
-  color: black;
-  padding: 12px 22px;
-  border-radius: 30px;
-  font-weight: bold;
-  border: none;
-  box-shadow: 0 0 15px gold;
-  z-index: 9999;
-  cursor: pointer;
-  font-size: 14px;
-  animation: pulse 2s infinite;
-">🔊 Pause Meditative Chant</button>
-
-<script>
-  const chant = document.getElementById('bg-chant');
-  const btn = document.getElementById('chant-btn');
-  let fading = false;
-  let isPlaying = false;
-
-  // Ensure playback starts after interaction
-  window.addEventListener('DOMContentLoaded', () => {
-    chant.muted = true;
-    chant.volume = 0;
-    chant.play().then(() => {
-      fadeVolume(chant, 1, 1000);
-      chant.muted = false;
-      isPlaying = true;
-    }).catch((e) => {
-      console.log("Playback blocked until interaction:", e);
-    });
-  });
-
-  function fadeVolume(audio, target, duration) {
-    const stepTime = 50;
-    const steps = duration / stepTime;
-    const step = (target - audio.volume) / steps;
-    let count = 0;
-
-    const fade = setInterval(() => {
-      audio.volume = Math.min(1, Math.max(0, audio.volume + step));
-      count++;
-      if (count >= steps) clearInterval(fade);
-    }, stepTime);
-  }
-
-  function fadeToggleChant() {
-    if (fading) return;
-    fading = true;
-
-    if (isPlaying) {
-      fadeVolume(chant, 0, 800);
-      setTimeout(() => {
-        chant.pause();
-        btn.innerText = "🔊 Play Meditative Chant";
-        isPlaying = false;
-        fading = false;
-      }, 800);
-    } else {
-      chant.volume = 0;
-      chant.play().then(() => {
-        fadeVolume(chant, 1, 800);
-        btn.innerText = "🔊 Pause Meditative Chant";
-        isPlaying = true;
-        fading = false;
-      }).catch(() => {
-        alert("🎧 Please interact with the page first (click anywhere)");
-        fading = false;
-      });
-    }
-  }
-</script>
-
-<style>
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-  70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-}
-</style>
-""", unsafe_allow_html=True)
 
 
 
