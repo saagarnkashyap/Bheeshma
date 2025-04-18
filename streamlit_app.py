@@ -31,164 +31,7 @@ import difflib  # Make sure this is at the top
 
 # #------------------------------CSS------------------------------
 
-#------------------------------CSS------------------------------
-st.markdown("""
-<!-- ✅ Load Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari&family=Unbounded:wght@400;700&family=Inter&display=swap" rel="stylesheet">
-
-<style>
-/* 🌑 Global Dark Background */
-body {
-    background-color: #000000;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-div[data-testid="stAppViewContainer"] {
-    background-color: #000000 !important;
-    color: white !important;
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
-    padding-bottom: 80px;
-}
-
-/* ✨ Headings (Unbounded) */
-h1, h2, h3 {
-    font-family: 'Unbounded', cursive !important;
-    color: white !important;
-    text-shadow: 0 0 8px #ffffff55;
-    word-wrap: break-word;
-}
-
-/* 🕉️ Main Title */
-.title {
-    text-align: center;
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: white;
-    margin: 1rem 0 1.5rem;
-    text-shadow: 0 0 10px #ffffff88;
-    font-family: 'Unbounded', cursive !important;
-}
-
-/* 📜 Shloka Sanskrit Style (Noto) */
-.shloka-sanskrit {
-    font-family: 'Noto Serif Devanagari', serif;
-    font-size: clamp(1.1rem, 3vw, 1.3rem);
-    color: #fffacd;
-    line-height: 1.8;
-}
-
-/* 🧱 Section Cards */
-.section {
-    padding: 1rem;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    margin: 1rem auto;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
-    max-width: 900px;
-}
-
-/* 🔗 Link Styles */
-a {
-    color: #FFD700;
-    word-wrap: break-word;
-}
-a:hover {
-    text-shadow: 0 0 10px white;
-    color: #ffffff;
-}
-
-/* 🧭 Floating Chapter Navbar */
-#chapter-nav {
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 10px;
-    background:#000;
-    border-bottom:1px solid white;
-    text-align:center;
-    font-size: 14px;
-    z-index: 9999;
-}
-
-#chapter-nav a {
-    display: inline-block;
-    margin: 0 10px;
-    font-weight: bold;
-}
-
-/* 🔄 Chakra Spinner */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.chakra-spinner {
-    position: fixed;
-    top: 10px;
-    right: 15px;
-    animation: spin 8s linear infinite;
-    width: 50px;
-    z-index: 999;
-}
-
-/* 🧱 Expanders */
-[data-testid="stExpander"] {
-    max-width: 100%;
-    margin-bottom: 1rem;
-}
-
-/* 🎧 Meditative Button */
-#chant-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    max-width: 90vw;
-    font-size: 14px;
-    padding: 10px 18px;
-    border-radius: 30px;
-    z-index: 99999;
-    text-align: center;
-}
-
-/* 📱 Mobile Tweaks */
-@media (max-width: 600px) {
-  .title {
-    font-size: 2rem;
-    padding: 0 1rem;
-  }
-  .section {
-    padding: 1rem;
-    margin: 0.5rem;
-  }
-  #chant-btn {
-    font-size: 13px;
-    bottom: 15px;
-    right: 10px;
-    padding: 10px;
-  }
-  .chakra-spinner {
-    width: 40px;
-    top: 5px;
-    right: 10px;
-  }
-  .shloka-sanskrit {
-    font-size: 1.1rem;
-  }
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-
-
-
+# #------------------------------CSS------------------------------
 # st.markdown("""
 # <!-- ✅ Load Fonts -->
 # <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari&family=Unbounded:wght@400;700&family=Inter&display=swap" rel="stylesheet">
@@ -199,51 +42,59 @@ a:hover {
 #     background-color: #000000;
 #     color: white;
 #     font-family: 'Inter', sans-serif;
+#     margin: 0;
+#     padding: 0;
+#     overflow-x: hidden;
 # }
 
 # div[data-testid="stAppViewContainer"] {
 #     background-color: #000000 !important;
 #     color: white !important;
 #     font-family: 'Inter', sans-serif;
+#     overflow-x: hidden;
+#     padding-bottom: 80px;
 # }
 
-# /* ✨ Titles (Unbounded Font) */
+# /* ✨ Headings (Unbounded) */
 # h1, h2, h3 {
 #     font-family: 'Unbounded', cursive !important;
 #     color: white !important;
 #     text-shadow: 0 0 8px #ffffff55;
+#     word-wrap: break-word;
 # }
 
 # /* 🕉️ Main Title */
 # .title {
 #     text-align: center;
-#     font-size: 3em;
+#     font-size: clamp(2rem, 5vw, 3rem);
 #     color: white;
-#     margin-bottom: 30px;
+#     margin: 1rem 0 1.5rem;
 #     text-shadow: 0 0 10px #ffffff88;
 #     font-family: 'Unbounded', cursive !important;
 # }
 
-# /* 📜 Shloka Sanskrit Style (Noto Serif Devanagari) */
+# /* 📜 Shloka Sanskrit Style (Noto) */
 # .shloka-sanskrit {
 #     font-family: 'Noto Serif Devanagari', serif;
-#     font-size: 1.2em;
+#     font-size: clamp(1.1rem, 3vw, 1.3rem);
 #     color: #fffacd;
 #     line-height: 1.8;
 # }
 
 # /* 🧱 Section Cards */
 # .section {
-#     padding: 20px;
+#     padding: 1rem;
 #     border-radius: 15px;
 #     background: rgba(255, 255, 255, 0.05);
-#     margin-bottom: 20px;
+#     margin: 1rem auto;
 #     box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+#     max-width: 900px;
 # }
 
 # /* 🔗 Link Styles */
 # a {
 #     color: #FFD700;
+#     word-wrap: break-word;
 # }
 # a:hover {
 #     text-shadow: 0 0 10px white;
@@ -256,11 +107,20 @@ a:hover {
 #     top:0;
 #     left:0;
 #     width:100%;
+#     overflow-x: auto;
+#     white-space: nowrap;
+#     padding: 10px;
 #     background:#000;
-#     padding:10px;
-#     text-align:center;
-#     z-index:9999;
 #     border-bottom:1px solid white;
+#     text-align:center;
+#     font-size: 14px;
+#     z-index: 9999;
+# }
+
+# #chapter-nav a {
+#     display: inline-block;
+#     margin: 0 10px;
+#     font-weight: bold;
 # }
 
 # /* 🔄 Chakra Spinner */
@@ -268,8 +128,148 @@ a:hover {
 #   from { transform: rotate(0deg); }
 #   to { transform: rotate(360deg); }
 # }
+
+# .chakra-spinner {
+#     position: fixed;
+#     top: 10px;
+#     right: 15px;
+#     animation: spin 8s linear infinite;
+#     width: 50px;
+#     z-index: 999;
+# }
+
+# /* 🧱 Expanders */
+# [data-testid="stExpander"] {
+#     max-width: 100%;
+#     margin-bottom: 1rem;
+# }
+
+# /* 🎧 Meditative Button */
+# #chant-btn {
+#     position: fixed;
+#     bottom: 20px;
+#     right: 20px;
+#     max-width: 90vw;
+#     font-size: 14px;
+#     padding: 10px 18px;
+#     border-radius: 30px;
+#     z-index: 99999;
+#     text-align: center;
+# }
+
+# /* 📱 Mobile Tweaks */
+# @media (max-width: 600px) {
+#   .title {
+#     font-size: 2rem;
+#     padding: 0 1rem;
+#   }
+#   .section {
+#     padding: 1rem;
+#     margin: 0.5rem;
+#   }
+#   #chant-btn {
+#     font-size: 13px;
+#     bottom: 15px;
+#     right: 10px;
+#     padding: 10px;
+#   }
+#   .chakra-spinner {
+#     width: 40px;
+#     top: 5px;
+#     right: 10px;
+#   }
+#   .shloka-sanskrit {
+#     font-size: 1.1rem;
+#   }
+# }
 # </style>
 # """, unsafe_allow_html=True)
+
+
+
+
+
+st.markdown("""
+<!-- ✅ Load Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari&family=Unbounded:wght@400;700&family=Inter&display=swap" rel="stylesheet">
+
+<style>
+/* 🌑 Global Dark Background */
+body {
+    background-color: #000000;
+    color: white;
+    font-family: 'Inter', sans-serif;
+}
+
+div[data-testid="stAppViewContainer"] {
+    background-color: #000000 !important;
+    color: white !important;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ✨ Titles (Unbounded Font) */
+h1, h2, h3 {
+    font-family: 'Unbounded', cursive !important;
+    color: white !important;
+    text-shadow: 0 0 8px #ffffff55;
+}
+
+/* 🕉️ Main Title */
+.title {
+    text-align: center;
+    font-size: 3em;
+    color: white;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px #ffffff88;
+    font-family: 'Unbounded', cursive !important;
+}
+
+/* 📜 Shloka Sanskrit Style (Noto Serif Devanagari) */
+.shloka-sanskrit {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 1.2em;
+    color: #fffacd;
+    line-height: 1.8;
+}
+
+/* 🧱 Section Cards */
+.section {
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+/* 🔗 Link Styles */
+a {
+    color: #FFD700;
+}
+a:hover {
+    text-shadow: 0 0 10px white;
+    color: #ffffff;
+}
+
+/* 🧭 Floating Chapter Navbar */
+#chapter-nav {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:#000;
+    padding:10px;
+    text-align:center;
+    z-index:9999;
+    border-bottom:1px solid white;
+}
+
+/* 🔄 Chakra Spinner */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 
