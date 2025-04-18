@@ -326,7 +326,7 @@ mode = st.sidebar.radio("Choose a View", [
     "🤖 Chat with Bheeshma"  # 👈 Add this here
 ])
 st.markdown("""
-<audio id="bg-chant" autoplay loop style="display:none">
+<audio id="bg-chant" loop style="display:none">
   <source src="https://raw.githubusercontent.com/saagarnkashyap/Bheeshma/main/OM%20Chanting%20%40417%20Hz%20_%20Removes%20All%20Negative%20Blocks%20%5B8sYK7lm3UKg_00_24_11_00_24_33_part%5D.mp3" type="audio/mpeg">
 </audio>
 
@@ -361,14 +361,15 @@ st.markdown("""
   const chantBtn = document.getElementById('chantBtn');
   const chantVolume = document.getElementById('chantVolume');
   let fading = false;
-  let isPlaying = true;
+  let isPlaying = false;
   let shlokaPlaying = false;
 
-  // Update volume manually
+  // Volume slider control
   chantVolume.addEventListener('input', () => {
     chant.volume = parseFloat(chantVolume.value);
   });
 
+  // Toggle chant play/pause with fade
   function fadeToggleChant() {
     if (fading) return;
     fading = true;
@@ -405,7 +406,7 @@ st.markdown("""
     }, 80);
   }
 
-  // Pause chant when any other audio plays (shloka)
+  // Pause chant when other audio plays (shloka)
   document.addEventListener("play", function(e){
     if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
       shlokaPlaying = true;
@@ -444,6 +445,32 @@ st.markdown("""
       }
     }
   }, true);
+
+  // ✅ Autoplay after first user interaction
+  function initAutoplay() {
+    if (!isPlaying && !shlokaPlaying) {
+      chant.volume = 0;
+      chant.play().then(() => {
+        let v = 0;
+        const fadeIn = setInterval(() => {
+          v += 0.05;
+          chant.volume = Math.min(1, v);
+          if (v >= 1) {
+            isPlaying = true;
+            chantBtn.innerText = "⏸️ Pause Meditative Chant";
+            clearInterval(fadeIn);
+          }
+        }, 80);
+      }).catch((e) => {
+        console.log("Autoplay blocked:", e);
+      });
+    }
+  }
+
+  window.addEventListener("click", initAutoplay, { once: true });
+  window.addEventListener("touchstart", initAutoplay, { once: true });
+  window.addEventListener("scroll", initAutoplay, { once: true });
+
 </script>
 
 <style>
