@@ -339,7 +339,6 @@ st.markdown("""
   align-items: center;
   gap: 10px;
 ">
-
   <button onclick="fadeToggleChant()" id="chantBtn" style="
     background: radial-gradient(circle, #ffd700, #ff9900);
     color: black;
@@ -360,16 +359,14 @@ st.markdown("""
   const chant = document.getElementById('bg-chant');
   const chantBtn = document.getElementById('chantBtn');
   const chantVolume = document.getElementById('chantVolume');
-  let fading = false;
   let isPlaying = false;
-  let shlokaPlaying = false;
+  let fading = false;
 
-  // Volume slider control
+  // Volume Control
   chantVolume.addEventListener('input', () => {
     chant.volume = parseFloat(chantVolume.value);
   });
 
-  // Toggle chant play/pause with fade
   function fadeToggleChant() {
     if (fading) return;
     fading = true;
@@ -377,20 +374,21 @@ st.markdown("""
     let volume = chant.volume;
     const step = 0.05;
 
-    const fade = setInterval(() => {
-      if (isPlaying) {
+    if (isPlaying) {
+      const fadeOut = setInterval(() => {
         volume -= step;
+        chant.volume = Math.max(0, volume);
         if (volume <= 0) {
           chant.pause();
           isPlaying = false;
           chantBtn.innerText = "🧘 Play Meditative Chant";
-          clearInterval(fade);
+          clearInterval(fadeOut);
           fading = false;
         }
-      } else {
-        chant.volume = 0;
-        chant.play();
-        volume = 0;
+      }, 80);
+    } else {
+      chant.volume = 0;
+      chant.play().then(() => {
         const fadeIn = setInterval(() => {
           volume += step;
           chant.volume = Math.min(1, volume);
@@ -401,54 +399,13 @@ st.markdown("""
             fading = false;
           }
         }, 80);
-        clearInterval(fade);
-      }
-    }, 80);
+      }).catch(e => console.log("Playback failed:", e));
+    }
   }
 
-  // Pause chant when other audio plays (shloka)
-  document.addEventListener("play", function(e){
-    if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
-      shlokaPlaying = true;
-      if (!chant.paused) {
-        const fadeOut = setInterval(() => {
-          chant.volume -= 0.05;
-          if (chant.volume <= 0) {
-            chant.pause();
-            chant.volume = 0;
-            clearInterval(fadeOut);
-            chantBtn.innerText = "🧘 Play Meditative Chant";
-            isPlaying = false;
-          }
-        }, 80);
-      }
-    }
-  }, true);
-
-  // Resume chant when shloka ends
-  document.addEventListener("ended", function(e){
-    if (e.target.tagName === "AUDIO" && e.target.id !== "bg-chant") {
-      shlokaPlaying = false;
-      if (chant.paused) {
-        chant.volume = 0;
-        chant.play();
-        chantBtn.innerText = "⏸️ Pause Meditative Chant";
-        let v = 0;
-        const fadeIn = setInterval(() => {
-          v += 0.05;
-          chant.volume = Math.min(1, v);
-          if (v >= 1) {
-            isPlaying = true;
-            clearInterval(fadeIn);
-          }
-        }, 80);
-      }
-    }
-  }, true);
-
-  // ✅ Autoplay after first user interaction
-  function initAutoplay() {
-    if (!isPlaying && !shlokaPlaying) {
+  // Auto start after interaction
+  const tryAutoPlay = () => {
+    if (!isPlaying) {
       chant.volume = 0;
       chant.play().then(() => {
         let v = 0;
@@ -461,16 +418,14 @@ st.markdown("""
             clearInterval(fadeIn);
           }
         }, 80);
-      }).catch((e) => {
-        console.log("Autoplay blocked:", e);
-      });
+      }).catch(e => console.log("Autoplay blocked:", e));
     }
-  }
+    document.removeEventListener('click', tryAutoPlay);
+    document.removeEventListener('touchstart', tryAutoPlay);
+  };
 
-  window.addEventListener("click", initAutoplay, { once: true });
-  window.addEventListener("touchstart", initAutoplay, { once: true });
-  window.addEventListener("scroll", initAutoplay, { once: true });
-
+  document.addEventListener('click', tryAutoPlay);
+  document.addEventListener('touchstart', tryAutoPlay);
 </script>
 
 <style>
@@ -481,6 +436,7 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 #----------------------------original markdown for autoplay chanting--------------------------
