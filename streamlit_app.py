@@ -711,7 +711,7 @@ st.markdown(
     """
     <hr style="margin-top: 2rem; margin-bottom: 1rem;">
     <div style="text-align: center; font-size: 0.9rem; color: gray;">
-        Made with 🕉️ by <strong>Saagar N Kashyap</strong>
+        Made by <strong>Saagar N Kashyap</strong>
     </div>
     """,
     unsafe_allow_html=True
