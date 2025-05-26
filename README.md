@@ -1,7 +1,6 @@
 <div align="center">
 
 # Bheeshma – Bhagavad Gita Explorer
-
 **A spiritual web companion that brings timeless Gita wisdom to life.**  
 Built using Python, Streamlit, and modern UI/UX principles for immersive self-discovery.
 
