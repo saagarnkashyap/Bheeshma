@@ -323,7 +323,7 @@ if "selected_section" not in st.session_state:
 mode = st.sidebar.radio("Choose a View", [
     "📖 Explore Chapters",
     "🙏 Life Help",
-    "🤖 Chat with Bheeshma (Will be released soon)"  # 👈 Add this here
+    "🤖 Chat with Bheeshma"  # 👈 Add this here
 ])
 
 
@@ -610,7 +610,7 @@ elif mode == "🙏 Life Help":
 
 # ======================= 🤖 CHATBOT MODE =======================
 
-# elif mode == "🤖 Chat with Bheeshma":
+elif mode == "🤖 Chat with Bheeshma":
 #     import openai
 #     import os
 #     from dotenv import load_dotenv
@@ -619,7 +619,7 @@ elif mode == "🙏 Life Help":
 #     load_dotenv()
 #     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-#     st.title("🧠 Chat with Bheeshma")
+    st.title("Will be launched soon :)")
 #     st.markdown("Ask about life, karma, fear, duty, or spiritual questions. Bheeshma will reply using the wisdom of the Bhagavad Gita.")
 
 #     # Initialize message history
