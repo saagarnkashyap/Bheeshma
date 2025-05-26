@@ -5,7 +5,8 @@
 **A spiritual web companion that brings timeless Gita wisdom to life.**  
 Built using Python, Streamlit, and modern UI/UX principles for immersive self-discovery.
 
-![Bheeshma Banner](https://your-screenshot-or-banner-url.com)
+![image](https://github.com/user-attachments/assets/14e8f6c5-5637-490c-84c2-7207bf7edd29)
+
 
 </div>
 
