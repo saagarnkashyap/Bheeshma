@@ -323,7 +323,7 @@ if "selected_section" not in st.session_state:
 mode = st.sidebar.radio("Choose a View", [
     "📖 Explore Chapters",
     "🙏 Life Help",
-    "🤖 Chat with Bheeshma"  # 👈 Add this here
+    "🤖 Chat with Bheeshma (Will be released soon)"  # 👈 Add this here
 ])
 
 
