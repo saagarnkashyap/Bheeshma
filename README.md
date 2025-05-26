@@ -5,9 +5,7 @@
 **A spiritual web companion that brings timeless Gita wisdom to life.**  
 Built using Python, Streamlit, and modern UI/UX principles for immersive self-discovery.
 
-![Screenshot 2025-05-26 182913](https://github.com/user-attachments/assets/20a32e75-0e59-4e78-bb25-4d7fe08766b6)
-![Screenshot 2025-05-26 182836](https://github.com/user-attachments/assets/95178b71-9ee7-454c-92ca-74a6740300da)
-![Screenshot 2025-05-26 182821](https://github.com/user-attachments/assets/188d3eba-ac20-4e9e-b256-fe193f7b7f39)
+
 
 
 
