@@ -6,6 +6,7 @@
 Built using Python, Streamlit, and modern UI/UX principles for immersive self-discovery.
 
 
+![Screen Recording 2025-05-26 194934 (1)](https://github.com/user-attachments/assets/281a2d8e-b89f-4e30-9c77-dfe95aff41b9)
 
 
 
